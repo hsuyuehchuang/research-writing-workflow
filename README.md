@@ -1,100 +1,126 @@
 # Research Writing Workflow
 
-A role-based toolkit for technical research writing workflows centered on Markdown as the source of truth.
+Toolkit repo for reusable research-writing skills, templates, and publishing scripts.
 
-This repository is designed for:
+Use this repo for:
 
-- research notes
-- engineering concept writeups
-- math and physics explanations
-- appendix-style derivation expansion
-- Markdown to LaTeX to PDF publishing
+- Markdown note writing
+- math-safe GitHub Markdown cleanup
+- algorithm and decision-note templates
+- appendix expansion rules
+- optional Markdown to LaTeX to PDF publishing
 
-## Goals
+Do not use this repo as the default output location for topic notes.
 
-- Keep the main note concise enough for a 30-minute report
-- Preserve clear mathematical and physical explanations
-- Support optional deep appendix expansion on demand
-- Separate research, writing, derivation, and publishing concerns
-- Make the publishing path stable with Python scripts instead of ad hoc prompt conversion
+## Main Skill
 
-## Roles
+- `mdwrite`
 
-- `chief-conductor`: receives free-form user requests and routes work
-- `researcher`: collects topic background, principles, trade-offs, and engineering context
-- `math-physicist`: explains math meaning, physical meaning, and notation consistency
-- `markdown-writer`: writes the main Markdown note with report-aware structure
-- `derivation-expander`: expands selected sections into detailed appendices only when requested
-- `latex-publisher`: converts Markdown to LaTeX and builds PDF/web-preview artifacts
+`mdwrite` is the primary skill for turning already-refined discussion, deep-research output, or curated technical content into a final `main.md`.
 
-## Repository Layout
+Default behavior:
+
+- write the Markdown note first
+- keep output concise and structured
+- do not auto-generate `tex/pdf`
+- run math-safe cleanup when needed
+
+## Typical Usage
 
 ```text
-research-writing-workflow/
-├── README.md
-├── docs/
-│   ├── architecture.md
-│   ├── role-boundaries.md
-│   └── style-guide.md
-├── skills/
-│   ├── chief-conductor/
-│   ├── researcher/
-│   ├── math-physicist/
-│   ├── markdown-writer/
-│   ├── derivation-expander/
-│   └── latex-publisher/
-├── scripts/
-│   ├── markdown_to_latex.py
-│   ├── build_pdf.py
-│   └── preview_site.py
-└── templates/
-    ├── research_note.md
-    ├── appendix_block.md
-    └── report_outline.md
+Use mdwrite to turn this discussion into sar_research_note/RDA/main.md.
+Follow the DPCA note style.
+Keep it within 15 minutes of reading.
+Use tables wherever possible.
+Do not generate tex/pdf yet.
 ```
 
-## Typical Workflow
+Engineering-decision variant:
 
-1. User discusses a topic in free form with `chief-conductor`.
-2. `chief-conductor` routes background gathering to `researcher`.
-3. `math-physicist` refines mathematical and physical explanations.
-4. `markdown-writer` produces a single main Markdown note.
-5. If needed, `derivation-expander` appends a detailed appendix.
-6. `latex-publisher` runs the publishing scripts to generate LaTeX, PDF, and a lightweight preview page.
+```text
+Use research-writing-workflow to help me study RDA.
+Please use the engineering-decision algorithm note format:
+1. 重點摘要
+2. 物理意義與關鍵數學
+3. 核心流程
+4. 3大風險
+5. 演算法決策輔助
+6. 最後告訴我還缺哪些參數要確認
+```
 
-## Script Usage
+## Input
 
-Convert Markdown to LaTeX:
+Best inputs for this workflow:
+
+- refined discussion summary
+- deep-research output
+- bullet points
+- formulas
+- target output path
+- required sections or constraints
+
+## Output
+
+Default output:
+
+- one Markdown file, usually `main.md`
+
+Write outputs into a working repo, for example:
+
+```text
+sar_research_note/RDA/main.md
+interview/perc-report/main.md
+```
+
+If the user later asks for publishing output, the same folder can receive:
+
+- `main.tex`
+- `main.pdf`
+- `preview.html`
+
+Publishing behavior now preserves:
+
+- Markdown-style nested outline lists
+- stable table numbering for normal-width tables
+- conservative display-equation line breaking
+
+## Templates
+
+- `templates/research_note.md`
+- `templates/algorithm_note.md`
+- `templates/algorithm_decision_note.md`
+- `templates/appendix_block.md`
+
+Style reference:
+
+- `docs/reference_style.md`
+
+## Skill Boundaries
+
+Shared skills belong here when they are reusable across repos.
+
+Examples:
+
+- `mdwrite`
+- Markdown math rules
+- research-note templates
+- publishing helpers
+
+Repo-local skills should stay local when they depend on one repo or one workflow.
+
+Examples:
+
+- `interview-company-prep`
+
+See:
+
+- [`docs/skill-boundaries.md`](./docs/skill-boundaries.md)
+
+## Scripts
 
 ```bash
 python3 scripts/markdown_to_latex.py input.md -o output.tex
-```
-
-Build PDF from Markdown:
-
-```bash
 python3 scripts/build_pdf.py input.md --output-dir build
+python3 scripts/build_pdf.py sar_research_note/RDA/main.md --write-near-source
+python3 scripts/preview_site.py build/input.pdf --title "Preview"
 ```
-
-Create a simple HTML page that embeds a PDF:
-
-```bash
-python3 scripts/preview_site.py build/input.pdf --title "Research Note"
-```
-
-## Design Constraints
-
-- Markdown is the authoritative editing format.
-- The main body should stay concise by default.
-- Detailed derivations belong in an appendix block when explicitly requested.
-- Publishing scripts should prefer predictable transformations over aggressive formatting tricks.
-
-## First-Version Scope
-
-- Research-note focused
-- Role definitions and handoff boundaries
-- Minimal but usable Markdown to LaTeX pipeline
-- PDF build wrapper
-- HTML preview wrapper for generated PDFs
-
-Interview or company-specific reporting workflows should be built on top of this toolkit, not embedded into the first-version core.
